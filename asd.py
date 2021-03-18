@@ -75,3 +75,29 @@ x_train = pd.concat(new_columns, axis=1)
 
 
 
+# TRAIN MODEL
+
+print("Min value:",y_train["SalePrice"].min())
+print("Max value:",y_train["SalePrice"].max())
+print("Mean value:",y_train["SalePrice"].mean())
+
+def display_scores(name, scores):
+    print(name,"cross validation:")
+    print("\t" + name,"error mean:",scores.mean())
+    print("\t" + name, "error standard deviation:", scores.std())
+
+
+# Linear Regression
+
+lin_reg = LinearRegression()
+lin_reg.fit(x_train, y_train)
+
+lin_pred = lin_reg.predict(x_train)
+lin_mse = mean_squared_error(y_train, lin_pred)
+lin_rmse = np.sqrt(lin_mse)
+print("Linear Regression RMSE:",lin_rmse)
+
+lin_scores = cross_val_score(lin_reg, x_train, y_train, scoring="neg_mean_squared_error", cv=10)
+lin_rmse_scores = np.sqrt(-lin_scores)
+
+display_scores("Linear Regression",lin_rmse_scores)
