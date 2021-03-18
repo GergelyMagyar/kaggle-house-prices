@@ -101,3 +101,19 @@ lin_scores = cross_val_score(lin_reg, x_train, y_train, scoring="neg_mean_square
 lin_rmse_scores = np.sqrt(-lin_scores)
 
 display_scores("Linear Regression",lin_rmse_scores)
+
+
+# Decision Tree
+
+tree_reg = DecisionTreeRegressor()
+tree_reg.fit(x_train, y_train)
+
+tree_pred = tree_reg.predict(x_train)
+tree_mse = mean_squared_error(y_train, tree_pred)
+tree_rmse = np.sqrt(tree_mse)
+print("Decision Tree RMSE:",tree_rmse)
+
+tree_scores = cross_val_score(tree_reg, x_train, y_train, scoring="neg_mean_squared_error", cv=10)
+tree_rmse_scores = np.sqrt(-tree_scores)
+
+display_scores("Decision Tree",tree_rmse_scores)
