@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sklearn
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OrdinalEncoder
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
@@ -43,5 +44,29 @@ x = raw_data.drop(["Id","SalePrice"], axis=1)
 
 # splitting to test and dev sets
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=12)
+
+
+# correlations
+
+train = x_train.copy()
+train["SalePrice"] = y
+correlation = train.corr()
+#print(correlation["SalePrice"].sort_values(ascending=False))
+
+
+# Text data
+
+text_values = x_train.select_dtypes(exclude=['int64','float64'])
+text_values_columns = text_values.columns
+
+new_columns = [x_train]
+for column in text_values_columns:
+    new_columns.append(pd.get_dummies(x_train[column]).astype(float))
+x_train = x_train.select_dtypes(include=['int64', 'float64']).astype(float)
+new_columns.insert(0, x_train)
+x_train = pd.concat(new_columns, axis=1)
+#print(x_train)
+#print(len(x_train.columns))
+
 
 
