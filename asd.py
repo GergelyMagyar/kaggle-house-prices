@@ -3,6 +3,11 @@ import numpy as np
 import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import  RandomForestRegressor
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
@@ -24,7 +29,7 @@ raw_data["BsmtFinType1"] = raw_data["BsmtFinType1"].fillna("NoBasement")
 raw_data["BsmtFinType2"] = raw_data["BsmtFinType2"].fillna("NoBasement")
 raw_data["FireplaceQu"] = raw_data["FireplaceQu"].fillna("NoFireplace")
 raw_data["GarageType"] = raw_data["GarageType"].fillna("NoGarage")
-raw_data["GarageYrBlt"] = raw_data["GarageYrBlt"].fillna("NoGarage")
+raw_data["GarageYrBlt"] = raw_data["GarageYrBlt"].fillna(raw_data["GarageYrBlt"].mean())
 raw_data["GarageFinish"] = raw_data["GarageFinish"].fillna("NoGarage")
 raw_data["GarageQual"] = raw_data["GarageQual"].fillna("NoGarage")
 raw_data["GarageCond"] = raw_data["GarageCond"].fillna("NoGarage")
@@ -59,13 +64,13 @@ correlation = train.corr()
 text_values = x_train.select_dtypes(exclude=['int64','float64'])
 text_values_columns = text_values.columns
 
-new_columns = [x_train]
+new_columns = []
 for column in text_values_columns:
     new_columns.append(pd.get_dummies(x_train[column]).astype(float))
 x_train = x_train.select_dtypes(include=['int64', 'float64']).astype(float)
 new_columns.insert(0, x_train)
 x_train = pd.concat(new_columns, axis=1)
-#print(x_train)
+#print(x_train.head(3))
 #print(len(x_train.columns))
 
 
